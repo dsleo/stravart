@@ -31,6 +31,7 @@ Have a look at the starter notebook.
 
 ## TODO
 
+- [ ] Be smart and craft a nice meta-heuristic to speed up search.
 - [ ] Add the openCV's find contour method. Something like this ?
 
 ```python
@@ -42,8 +43,12 @@ contours_paths = [c for n, c in enumerate(contours)]
 longest_contour = max(contours_paths, key=len)
 ```
 
-- [ ] Be smart and craft a nice meta-heuristic to speed up search.
 - [ ] Write the route to gpx file.
+- [ ] Add LLM Option "Give me the contour of a crocodile"
+- [ ] Ask LLM directly "Give me directions that makes the contour of a crocodile" ?
+- [ ] Try multi-modal LLM maybe ¯\\\_(ツ)\_/¯
+
+
 
 
 
