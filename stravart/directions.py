@@ -24,8 +24,8 @@ class Direction:
     def from_coordinates(cls, start: Coordinates, end: Coordinates):
         return cls(start=start, end=end)
 
-    def get_shortest_path_google_maps(self, mode="walking", alternatives=True, decimals=4):
-        gmaps = googlemaps.Client(key='AIzaSyAlFJy2mE0LKbLHJS7z4Kz9WgB2B76LtrA')
+    def get_shortest_path_google_maps(self,key, mode="walking", alternatives=True, decimals=4):
+        gmaps = googlemaps.Client(key=key)
         start_tuple = tuple(self.start)
         end_tuple = tuple(self.end)
         # Get directions
@@ -74,8 +74,7 @@ class Direction:
         unique_path_points = list(dict.fromkeys(path_points))
         return Route.from_list(unique_path_points)'''
 
-    def get_mapbox_routes(self, mode="cycling", alternatives=True, decimals=4):
-        access_token = "sk.eyJ1IjoibGVvZHMiLCJhIjoiY2xxczJpaDJ5MmdibDJrcDllejM1eWJocyJ9.IFk3eb3RMfndTJIIM_pVxQ"
+    def get_mapbox_routes(self, access_token, mode="cycling", alternatives=True, decimals=4):
         url = f"https://api.mapbox.com/directions/v5/mapbox/{mode}/{self.start.longitude},{self.start.latitude};{self.end.longitude},{self.end.latitude}"
         params = {
             'alternatives': str(alternatives).lower(),
