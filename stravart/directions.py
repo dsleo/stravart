@@ -178,13 +178,13 @@ class Route:
                 path_segment = direction.get_mapbox_routes(mode)
     
             # Initialize path segment for mapping
-            path_mapping[Direction.from_coordinates(start, end)] = []
+            path_mapping[Direction.from_coordinates(start, end)] = Route()
     
             # Add the path segment to the full path, removing consecutive duplicates
             for point in path_segment:
                 #if not full_path or full_path[-1] != point:
                 full_path.add_coordinate(point)
-                path_mapping[Direction.from_coordinates(start, end)].append(point)
+                path_mapping[Direction.from_coordinates(start, end)].add_coordinate(point)
 
         return full_path, path_mapping
 
