@@ -34,15 +34,17 @@ class Polygon(Route):
         scaled_polygon = Polygon(coordinates=[Coordinates.from_tuple(tuple(coord)) for coord in scaled_coordinates], system="cartesian")
         return scaled_polygon
     
-    def centroid(self) -> Coordinates:
+    @property
+    def centroid(self):
         if self.system == "GPS":
             raise NotImplementedError
         else:    
             x_coords = [p.latitude for p in self.coordinates]
             y_coords = [p.longitude for p in self.coordinates]
-            self.centroid = Coordinates(sum(x_coords) / len(self.coordinates), sum(y_coords) / len(self.coordinates))
-            return self.centroid
+            _centroid = Coordinates(sum(x_coords) / len(self.coordinates), sum(y_coords) / len(self.coordinates))
+            return _centroid
     
+    @property
     def area(self) -> float:
         if self.system == "GPS":
             raise NotImplementedError
@@ -56,8 +58,8 @@ class Polygon(Route):
                 x1, y1 = self.coordinates[i].latitude, self.coordinates[i].longitude
                 x2, y2 = self.coordinates[i + 1].latitude, self.coordinates[i + 1].longitude
                 area += (x1 * y2) - (x2 * y1)
-            self.area = abs(area) /2
-            return self.area
+            area = abs(area) /2
+            return area
 
     @property
     def perimeter(self) -> float:

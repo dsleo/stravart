@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List
+import math
 from math import radians, cos, sin, asin, sqrt
 import numpy as np
 
@@ -33,7 +34,7 @@ class RadialDistortion:
         if polygon.system == "GPS":
             raise NotImplementedError
         else:
-            centroid = polygon.centroid()
+            centroid = polygon.centroid
             distorted_polygon = []
 
             for point in polygon.coordinates:
@@ -48,18 +49,30 @@ class Rotation:
     angle: float
     
     def apply(self, polygon: Polygon):
-    
-        angle_radians = math.radians(angle)
+        
+        centroid = polygon.centroid
+        angle_radians = math.radians(self.angle)
         cos_angle = math.cos(angle_radians)
         sin_angle = math.sin(angle_radians)
-        ox, oy = (0, 0)
+        ox, oy = centroid.to_numpy_array()
     
         rotated_coords = []
         for coord in polygon.coordinates:
             x, y = coord.to_tuple()
-            rx = x * cos_angle - y * sin_angle
-            ry = x * sin_angle + y * cos_angle
-            rotated_coords.append(Coordinates(rx, ry))
+  
+            # Translate point to center
+            tx = x - ox
+            ty = y - oy
+
+            # Rotate point
+            rx = tx * cos_angle - ty * sin_angle
+            ry = tx * sin_angle + ty * cos_angle
+
+            # Translate point back
+            final_x = rx + ox
+            final_y = ry + oy
+
+            rotated_coords.append(Coordinates(final_x, final_y))
     
         return Polygon(coordinates=rotated_coords, system=polygon.system)
     
