@@ -1,8 +1,11 @@
 import numpy as np
 import cv2
 from scipy.spatial.distance import directed_hausdorff
-from shapely.geometry import Polygon
-    
+from sklearn.preprocessing import MinMaxScaler
+
+from .directions import *
+from .polygone import *
+
 def get_contour_from_points(points):
     """Convert a list of points to a contour format used by OpenCV."""
     return np.array(points, dtype=np.int32).reshape((-1, 1, 2))
@@ -22,6 +25,24 @@ def hausdorff_distance(poly1, poly2):
     u = np.array(poly1)
     v = np.array(poly2)
     return max(directed_hausdorff(u, v)[0], directed_hausdorff(v, u)[0])
+
+
+def diff_area(actual_bicycle_contour, path_mapping):
+
+    scaler = MinMaxScaler()
+    scaler.fit(actual_bicycle_contour.to_folium_tuples())
+
+    total_area = 0.
+    segments = path_mapping.keys()
+    for segment in segments:
+        little_poly = path_mapping[segment]
+        little_poly.add_coordinate(little_poly[0])
+        little_poly = Polygon.from_route(little_poly, system="cartesian")
+        little_poly = scaler.transform(little_poly.to_folium_tuples())
+        little_poly = Polygon.from_list(little_poly, system="cartesian")
+        total_area += little_poly.area
+
+    return total_area
 
 def calculate_angle(p1, p2, p3):
     """
@@ -63,26 +84,3 @@ def compare_polygons(poly1, poly2, threshold=45):
             mismatched_indices.append(i)
 
     return mismatched_indices
-
-def polygon_area(coordinates):
-    """
-    Calculate the area of a polygon using the shoelace formula.
-    :param coordinates: List of (x, y) tuples representing the vertices of the polygon.
-                        The last vertex should be the same as the first one.
-    :return: The area of the polygon.
-    """
-    n = len(coordinates)
-    if n < 4:  # Minimum 4 points (including the closing point)
-        return 0
-
-    area = 0
-    for i in range(n - 1):
-        x1, y1 = coordinates[i]
-        x2, y2 = coordinates[i + 1]
-        area += (x1 * y2) - (x2 * y1)
-    return abs(area) /2
-
-def polygon_areaBETTERMAYBE(coords):
-    """Calculate the area of a polygon given its coordinates."""
-    poly = Polygon(coords)
-    return poly.area
