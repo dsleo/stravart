@@ -157,55 +157,55 @@ class Route:
         return [coord.to_tuple() for coord in self.coordinates]
         
     def fill_paths_between_points(self, mode="walking", provider="google", apply_filter=True, min_distance=15):
-    """
-    Fill the shortest paths between all successive points in a list.
-    :param mode: Mode of transportation.
-    :param provider: Map service provider.
-    :param apply_filter: Boolean to apply filtering of close points.
-    :param min_distance: Minimum distance (in meters) for filtering.
-    """
-    full_path = Route()
-    path_mapping = {}
-    temp_mapping = {}  # Temporary mapping to store unfiltered paths
+        """
+        Fill the shortest paths between all successive points in a list.
+        :param mode: Mode of transportation.
+        :param provider: Map service provider.
+        :param apply_filter: Boolean to apply filtering of close points.
+        :param min_distance: Minimum distance (in meters) for filtering.
+        """
+        full_path = Route()
+        path_mapping = {}
+        temp_mapping = {}  # Temporary mapping to store unfiltered paths
 
-    for i in range(len(self.coordinates) - 1):
-        start = self.coordinates[i]
-        end = self.coordinates[i + 1]
+        for i in range(len(self.coordinates) - 1):
+            start = self.coordinates[i]
+            end = self.coordinates[i + 1]
 
-        direction = Direction(start, end)
-        if provider == "google":
-            path_segment = direction.get_shortest_path_google_maps(mode)
-        elif provider == "mapbox":
-            path_segment = direction.get_mapbox_routes(mode)
+            direction = Direction(start, end)
+            if provider == "google":
+                path_segment = direction.get_shortest_path_google_maps(mode)
+            elif provider == "mapbox":
+                path_segment = direction.get_mapbox_routes(mode)
 
-        # Initialize path segment for mapping
-        temp_mapping[Direction.from_coordinates(start, end)] = Route()
+            # Initialize path segment for mapping
+            temp_mapping[Direction.from_coordinates(start, end)] = Route()
 
-        # Add the path segment to the full path, removing consecutive duplicates
-        for point in path_segment:
-            full_path.add_coordinate(point)
-            temp_mapping[Direction.from_coordinates(start, end)].add_coordinate(point)
+            # Add the path segment to the full path, removing consecutive duplicates
+            for point in path_segment:
+                full_path.add_coordinate(point)
+                temp_mapping[Direction.from_coordinates(start, end)].add_coordinate(point)
 
-    # Apply filtering if required
-    if apply_filter:
-        filtered_full_path = Route()
-        for i in range(len(full_path.coordinates)):
-            if i == 0 or great_circle(full_path.coordinates[i - 1], full_path.coordinates[i]).meters >= min_distance:
-                filtered_full_path.add_coordinate(full_path.coordinates[i])
+        # Apply filtering if required
+        if apply_filter:
+            filtered_full_path = Route()
+            for i in range(len(full_path.coordinates)):
+                if i == 0 or great_circle(full_path.coordinates[i - 1], full_path.coordinates[i]).meters >= min_distance:
+                    filtered_full_path.add_coordinate(full_path.coordinates[i])
 
-        # Update path_mapping based on filtered_full_path
-        for direction, route in temp_mapping.items():
-            filtered_route = Route()
-            for point in route.coordinates:
-                if point in filtered_full_path.coordinates:
-                    filtered_route.add_coordinate(point)
-            path_mapping[direction] = filtered_route
+            # Update path_mapping based on filtered_full_path
+            for direction, route in temp_mapping.items():
+                filtered_route = Route()
+                for point in route.coordinates:
+                    if point in filtered_full_path.coordinates:
+                        filtered_route.add_coordinate(point)
+                path_mapping[direction] = filtered_route
 
-        full_path = filtered_full_path
-    else:
-        path_mapping = temp_mapping
+            full_path = filtered_full_path
+        else:
+            path_mapping = temp_mapping
 
-    return full_path, path_mapping
+        return full_path, path_mapping
 
     def get_nearest_bicycle_road_points(self, dist=1000):
         nearest_points= Parallel(n_jobs=-1)(delayed(coord.get_nearest_bicycle_road_point)(dist=dist) for coord in self.coordinates)
