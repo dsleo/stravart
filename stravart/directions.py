@@ -28,7 +28,7 @@ class Direction:
         gmaps = googlemaps.Client(key='AIzaSyAlFJy2mE0LKbLHJS7z4Kz9WgB2B76LtrA')
         start_tuple = tuple(self.start)
         end_tuple = tuple(self.end)
-
+        print(start_tuple, end_tuple)
         # Get directions
         directions_result = gmaps.directions(start_tuple, end_tuple, mode=mode, alternatives=alternatives)
 
@@ -41,25 +41,26 @@ class Direction:
                 path_points = [(round(self.start.latitude, decimals), round(self.start.longitude, decimals))]
                 for step in steps:
                     start_location = step['start_location']
-                    end_location = step['end_location']
+                    #end_location = step['end_location']
                     path_points.append((round(start_location['lat'], decimals), round(start_location['lng'], decimals)))
-                    path_points.append((round(end_location['lat'], decimals), round(end_location['lng'], decimals)))
+                    #path_points.append((round(end_location['lat'], decimals), round(end_location['lng'], decimals)))
             
                 # Add the end point and remove duplicates
-                path_points.append((round(self.end.latitude, decimals), round(self.end.longitude, decimals)))
+                path_points[-1] = (round(self.end.latitude, decimals), round(self.end.longitude, decimals))
+                #path_points.append((round(self.end.latitude, decimals), round(self.end.longitude, decimals)))
                 unique_path_points = list(dict.fromkeys(path_points))
 
                 # Calculate area
                 from .polygone import Polygon
-                unique_path_points.append(unique_path_points[0])
-                polygon = Polygon.from_list(unique_path_points, system="GPS")
+                poly_list = unique_path_points + [unique_path_points[0]]
+                polygon = Polygon.from_list(poly_list, system="GPS")
                 normed_polygon = polygon.scale_coordinates()
-                #TODO CHECK polygon is closed
-                area = normed_polygon.area()
+                area = normed_polygon.area
                 if area < min_area:
                     min_area = area
                     best_route = unique_path_points
-
+            print("best",best_route)
+            print("-----------")        
             return Route.from_list(best_route)
         
         '''
@@ -98,11 +99,9 @@ class Direction:
                 # Calculate area
                 from .polygone import Polygon
                 from sklearn.preprocessing import MinMaxScaler
-                coordinates.append(coordinates[0])
-                polygon = Polygon.from_list(coordinates, system="GPS")
+                polygon = Polygon.from_list(poly_list, system="GPS")
                 normed_polygon = polygon.scale_coordinates()
-                #TODO CHECK polygon is closed
-                area = normed_polygon.area()
+                area = normed_polygon.area
                 if area < min_area:
                     min_area = area
                     best_route = route
@@ -183,10 +182,10 @@ class Route:
     
             # Add the path segment to the full path, removing consecutive duplicates
             for point in path_segment:
-                if not full_path or full_path[-1] != point:
-                    full_path.add_coordinate(point)
-                    path_mapping[Direction.from_coordinates(start, end)].append(point)
-    
+                #if not full_path or full_path[-1] != point:
+                full_path.add_coordinate(point)
+                path_mapping[Direction.from_coordinates(start, end)].append(point)
+
         return full_path, path_mapping
 
     def filter_close_points(self, min_distance=15):

@@ -85,7 +85,7 @@ class Projection:
     
     def apply(self, polygon: Polygon):
         # Calculate the centroid of the contour
-        centroid = polygon.centroid()
+        centroid = polygon.centroid
     
         # Translate the contour to the origin
         translated_poly = Translation(vector=centroid).apply(polygon) 
