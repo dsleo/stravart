@@ -102,3 +102,6 @@ share/python-wheels/
 *.spec
 
 # Install
+
+# Config
+config.py

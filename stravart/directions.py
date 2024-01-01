@@ -5,6 +5,7 @@ import requests
 import googlemaps
 from geopy.distance import great_circle
 
+from config import MAPBOX_ACCESS_TOKEN, GMAPS_KEY
 from .coordinates import Coordinates
 
 @dataclass(frozen=True)
@@ -24,8 +25,8 @@ class Direction:
     def from_coordinates(cls, start: Coordinates, end: Coordinates):
         return cls(start=start, end=end)
 
-    def get_shortest_path_google_maps(self,key, mode="walking", alternatives=True, decimals=4):
-        gmaps = googlemaps.Client(key=key)
+    def get_shortest_path_google_maps(self, mode="walking", alternatives=True, decimals=4):
+        gmaps = googlemaps.Client(key=GMAPS_KEY)
         start_tuple = tuple(self.start)
         end_tuple = tuple(self.end)
         # Get directions
@@ -74,7 +75,8 @@ class Direction:
         unique_path_points = list(dict.fromkeys(path_points))
         return Route.from_list(unique_path_points)'''
 
-    def get_mapbox_routes(self, access_token, mode="cycling", alternatives=True, decimals=4):
+    def get_mapbox_routes(self, mode="cycling", alternatives=True, decimals=4):
+        access_token = MAPBOX_ACCESS_TOKEN
         url = f"https://api.mapbox.com/directions/v5/mapbox/{mode}/{self.start.longitude},{self.start.latitude};{self.end.longitude},{self.end.latitude}"
         params = {
             'alternatives': str(alternatives).lower(),
