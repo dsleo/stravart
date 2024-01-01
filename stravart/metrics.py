@@ -1,5 +1,5 @@
 import numpy as np
-import cv2
+#import cv2
 from scipy.spatial.distance import directed_hausdorff
 from sklearn.preprocessing import MinMaxScaler
 

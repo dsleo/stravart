@@ -28,7 +28,6 @@ class Direction:
         gmaps = googlemaps.Client(key='AIzaSyAlFJy2mE0LKbLHJS7z4Kz9WgB2B76LtrA')
         start_tuple = tuple(self.start)
         end_tuple = tuple(self.end)
-        print(start_tuple, end_tuple)
         # Get directions
         directions_result = gmaps.directions(start_tuple, end_tuple, mode=mode, alternatives=alternatives)
 
@@ -59,8 +58,6 @@ class Direction:
                 if area < min_area:
                     min_area = area
                     best_route = unique_path_points
-            print("best",best_route)
-            print("-----------")        
             return Route.from_list(best_route)
         
         '''
@@ -99,12 +96,13 @@ class Direction:
                 # Calculate area
                 from .polygone import Polygon
                 from sklearn.preprocessing import MinMaxScaler
+                poly_list = coordinates + [coordinates[0]]
                 polygon = Polygon.from_list(poly_list, system="GPS")
                 normed_polygon = polygon.scale_coordinates()
                 area = normed_polygon.area
                 if area < min_area:
                     min_area = area
-                    best_route = route
+                    best_route = coordinates
             return Route.from_list(best_route['geometry']['coordinates'])
         else:
             return None
