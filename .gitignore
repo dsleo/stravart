@@ -67,6 +67,10 @@ __pycache__/
 *$py.class
 .ipynb_checkpoints/
 
+# Virtual environment
+venv/
+env/
+
 # C extensions
 *.so
 
