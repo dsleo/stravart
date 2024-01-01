@@ -39,7 +39,7 @@ class RadialDistortion:
             for point in polygon.coordinates:
                 vector = point.to_numpy_array() - centroid.to_numpy_array()
                 distorted_point = centroid.to_numpy_array() + vector * (1 + self.distortion_factor)
-                distorted_polygon.append(Coordinates.from_numpy_array(distorted_point))
+                distorted_polygon.append(Coordinates.from_tuple(distorted_point))
 
             return Polygon(coordinates=distorted_polygon, system=polygon.system)
 
