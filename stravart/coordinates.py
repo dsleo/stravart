@@ -26,7 +26,10 @@ class Coordinates:
 
     @staticmethod
     def from_tuple(coords_tuple):
-        return Coordinates(latitude=coords_tuple[0], longitude=coords_tuple[1])
+        if coords_tuple:
+            return Coordinates(latitude=coords_tuple[0], longitude=coords_tuple[1])
+        else:
+            return None
 
     def to_numpy_array(self):
         return np.array([self.latitude, self.longitude])
@@ -59,52 +62,51 @@ class Coordinates:
         return cls(latitude=coordinates[0], longitude=coordinates[1])
 
     def get_nearest_bicycle_road_point(self, dist=1000):
-        overpass_url = "http://overpass-api.de/api/interpreter"
-        lat, lon  = self.latitude, self.longitude
-        overpass_query = f"""
-        [out:json];
-                      (
-          way(around:{dist},{lat},{lon})["highway"="cycleway"];
-          way(around:{dist},{lat},{lon})["bicycle"="designated"];
-          way(around:{dist},{lat},{lon})["bicycle"="yes"];
-          way(around:{dist},{lat},{lon})["highway"="residential"];
-          way(around:{dist},{lat},{lon})["highway"="service"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="path"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="footway"]["bicycle"="yes"];
-          way(around:{dist},{lat},{lon})["highway"="living_street"];
-          way(around:{dist},{lat},{lon})["highway"="track"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="tertiary"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="secondary"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="primary"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="unclassified"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="pedestrian"]["bicycle"="yes"];
-          way(around:{dist},{lat},{lon})["highway"="bridleway"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="trunk"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="trunk_link"]["bicycle"!="no"];
-          way(around:{dist},{lat},{lon})["highway"="motorway_link"]["bicycle"!="no"];
-        );
-    
-        (._;>;);
-        out center;
-        """
-        response = requests.get(overpass_url, params={'data': overpass_query})
-        data = response.json()
+        try:
+            overpass_url = "http://overpass-api.de/api/interpreter"
+            lat, lon  = self.latitude, self.longitude
+            overpass_query = f"""
+            [out:json];
+                          (
+              way(around:{dist},{lat},{lon})["highway"="cycleway"];
+              way(around:{dist},{lat},{lon})["bicycle"="designated"];
+              way(around:{dist},{lat},{lon})["bicycle"="yes"];
+              way(around:{dist},{lat},{lon})["highway"="residential"];
+              way(around:{dist},{lat},{lon})["highway"="service"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="path"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="footway"]["bicycle"="yes"];
+              way(around:{dist},{lat},{lon})["highway"="living_street"];
+              way(around:{dist},{lat},{lon})["highway"="track"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="tertiary"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="secondary"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="primary"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="unclassified"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="pedestrian"]["bicycle"="yes"];
+              way(around:{dist},{lat},{lon})["highway"="bridleway"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="trunk"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="trunk_link"]["bicycle"!="no"];
+              way(around:{dist},{lat},{lon})["highway"="motorway_link"]["bicycle"!="no"];
+            );
         
-        nearest_point = None
-        min_distance = float('inf')
-    
-        for element in data['elements']:
-            if 'center' in element:
-                center = element['center']
-                road_point = (center['lat'], center['lon'])
-                distance = great_circle((lat, lon), road_point).meters
-                if distance < min_distance:
-                    nearest_point = road_point
-                    min_distance = distance
-    
-        #OR THIS ??
-        #if data['elements']:
-            #nearest_point = data['elements'][0]['center']
-            #return nearest_point['lat'], nearest_point['lon']
+            (._;>;);
+            out center;
+            """
+            response = requests.get(overpass_url, params={'data': overpass_query})
+            data = response.json()
+            
+            nearest_point = None
+            min_distance = float('inf')
         
-        return Coordinates.from_tuple(nearest_point)
+            for element in data['elements']:
+                if 'center' in element:
+                    center = element['center']
+                    road_point = (center['lat'], center['lon'])
+                    distance = great_circle((lat, lon), road_point).meters
+                    if distance < min_distance:
+                        nearest_point = road_point
+                        min_distance = distance
+            
+            return Coordinates.from_tuple(nearest_point)
+        except Exception as e:
+            print(f"Error processing coordinate {coord}: {e}")
+            return None

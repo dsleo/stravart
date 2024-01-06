@@ -210,4 +210,6 @@ class Route:
 
     def get_nearest_bicycle_road_points(self, dist=1000):
         nearest_points= Parallel(n_jobs=-1)(delayed(coord.get_nearest_bicycle_road_point)(dist=dist) for coord in self.coordinates)
+        #TODO: Could better handle or log this if there is None
+        nearest_points = [point for point in nearest_points if point is not None]
         return Route(coordinates = nearest_points)

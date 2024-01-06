@@ -33,19 +33,6 @@ def generate_grid(lat_start, lat_end, lon_start, lon_end, lat_points, lon_points
     
     return grid
 
-def generate_grid(lat_start, lat_end, lon_start, lon_end, lat_points, lon_points):
-    lat_step = (lat_end - lat_start) / (lat_points - 1)
-    lon_step = (lon_end - lon_start) / (lon_points - 1)
-
-    grid = []
-    for i in range(lat_points):
-        for j in range(lon_points):
-            lat = lat_start + i * lat_step
-            lon = lon_start + j * lon_step
-            grid.append((lat, lon))
-    
-    return grid
-
 def define_search_space(trial, city_grid):
     angle = trial.suggest_float('rot_angle', -20, 20, step=5)
 
@@ -59,7 +46,7 @@ def define_search_space(trial, city_grid):
 
     return angle, map_center, radius
 
-def objective(trial, poly=poly, city_grid=city_grid):
+def objective(trial, poly, city_grid):
     angle, map_center, radius = define_search_space(trial,city_grid=city_grid)
 
     # Apply the operation and projection
