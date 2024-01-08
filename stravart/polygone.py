@@ -69,13 +69,11 @@ class Polygon(Route):
                 lat1, lon1 = self.coordinates[i].latitude, self.coordinates[i].longitude
                 lat2, lon2 = self.coordinates[(i + 1) % len(self.coordinates)].latitude, self.coordinates[(i + 1) % len(self.coordinates)].longitude
                 perimeter += haversine(lon1, lat1, lon2, lat2)
-            self.perimeter = perimeter
-            return self.perimeter
+            return perimeter
         else:
             perimeter = 0
             for i in range(len(self.coordinates)):
                 x1, y1 = self.coordinates[i].latitude, self.coordinates[i].longitude
                 x2, y2 = self.coordinates[(i + 1) % len(self.coordinates)].latitude, self.coordinates[(i + 1) % len(self.coordinates)].longitude
                 perimeter += math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-            self.perimeter = perimeter
-            return self.perimeter
+            return perimeter
