@@ -60,26 +60,6 @@ class Polygon(Route):
                 area += (x1 * y2) - (x2 * y1)
             area = abs(area) /2
             return area
-
-    @property
-    def perimeter(self) -> float:
-        if self.system == "GPS":
-            perimeter = 0
-            for i in range(len(self.coordinates)):
-                lat1, lon1 = self.coordinates[i]
-                lat2, lon2 = self.coordinates[(i + 1) % len(self.coordinates)]
-                perimeter += haversine(lon1, lat1, lon2, lat2)
-            self.perimeter = perimeter
-            return self.perimeter
-            
-        else:
-            perimeter = 0
-            for i in range(len(self.coordinates)):
-                x1, y1 = self.coordinates[i]
-                x2, y2 = self.coordinates[(i + 1) % len(self.coordinates)]
-                perimeter += math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-            self.perimeter = perimeter
-            return self.perimeter
             
     @property
     def perimeter(self) -> float:
