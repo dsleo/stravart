@@ -1,6 +1,7 @@
 import numpy as np
 import folium
 import matplotlib.pyplot as plt
+from math import radians, sin, cos, asin, sqrt
 
 def are_collinear(p1, p2, p3):
     """
