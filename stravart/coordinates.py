@@ -108,5 +108,5 @@ class Coordinates:
             
             return Coordinates.from_tuple(nearest_point)
         except Exception as e:
-            print(f"Error processing coordinate {coord}: {e}")
+            print(f"Error getting closest bicycle coordinate for {(lat, lon)}: {e}")
             return None
