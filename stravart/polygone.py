@@ -63,7 +63,7 @@ class Polygon(Route):
 
     @property
     def perimeter(self) -> float:
-        if system == "GPS":
+        if self.system == "GPS":
             perimeter = 0
             for i in range(len(self.coordinates)):
                 lat1, lon1 = self.coordinates[i]
@@ -74,9 +74,9 @@ class Polygon(Route):
             
         else:
             perimeter = 0
-            for i in range(len(coordinates)):
-                x1, y1 = coordinates[i]
-                x2, y2 = coordinates[(i + 1) % len(coordinates)]
+            for i in range(len(self.coordinates)):
+                x1, y1 = self.coordinates[i]
+                x2, y2 = self.coordinates[(i + 1) % len(self.coordinates)]
                 perimeter += math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
             self.perimeter = perimeter
             return self.perimeter
