@@ -52,12 +52,19 @@ def min_distance(contour1, contour2):
         c2 = contour2.reshape(-1, 2)
         return np.min([np.linalg.norm(x-y) for x in c1 for y in c2])
 
+def intersect(contour1, contour2):
+    # Find the point of intersection between two contours
+    for point in contour1:
+        if point in contour2:
+            return point
+    return None
+
 def merge_contours(contours):
-    """Merge contours that share elements"""
     n = len(contours)
     parent = [i for i in range(n)]
     rank = [0] * n
 
+    # Merge contours with shared points
     for i in range(n):
         for j in range(i + 1, n):
             if contours_share_point(contours[i], contours[j]):
@@ -68,11 +75,15 @@ def merge_contours(contours):
     for i in range(n):
         idx = find(parent, i)
         if idx in merged_contours:
-            merged_contours[idx] = np.vstack((merged_contours[idx], contours[i]))
+            # Find the intersection point and insert the second contour from there
+            intersection_point = intersect(merged_contours[idx], contours[i])
+            intersection_idx = merged_contours[idx].index(intersection_point)
+            merged_contours[idx] = np.insert(merged_contours[idx], intersection_idx + 1, contours[i], axis=0)
         else:
             merged_contours[idx] = contours[i]
 
-    return list(merged_contours.values())
+    return [merged for merged in merged_contours.values()]
+
 
 def get_contours_distance(contours):
     num_contours = len(contours)
