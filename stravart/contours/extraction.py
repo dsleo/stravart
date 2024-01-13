@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 import cv2
 import numpy as np
+import urllib.request
 import matplotlib.pyplot as plt
 
 @dataclass
@@ -11,10 +12,15 @@ class ContourExtractor():
     contours: list = None
 
     def _read_image(self):
-        self.image = cv2.imread(self.image_path)
+        if self.image_path.startswith("http"):
+            response = urllib.request.urlopen(self.image_path)
+            image_array = np.asarray(bytearray(response.read()), dtype=np.uint8)
+            self.image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+        else:
+            self.image = cv2.imread(self.image_path)
+
         if self.image is None:
             raise ValueError("Could not open or find the image")
-        return self.image
     
     def get_contours(self, show=False, merge=True):
         """Extract contours from an image and merge them if they share points"""
@@ -54,6 +60,7 @@ class ContourExtractor():
         img_threshold = threshold * min(self.image.shape[:2])
 
         contour = self.merge_contours_from_specific(self.contours, contour_ix, threshold=img_threshold)
+
         return contour
 
     def plot_contours(self):
