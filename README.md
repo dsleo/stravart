@@ -31,21 +31,13 @@ Have a look at the starter notebook.
 
 ## TODO
 
-- [ ] Be smart and craft a nice meta-heuristic to speed up search.
-- [ ] Add the openCV's find contour method. Something like this ?
-
-```python
-r = rgb2gray(io.imread(img_path))
-r = exposure.adjust_gamma(r, 0.5)
-contours = measure.find_contours(r, 0.9)
-
-contours_paths = [c for n, c in enumerate(contours)]
-longest_contour = max(contours_paths, key=len)
-```
+- [X] Start with a meta-heuristic to speed up search.
+- [X] Add the openCV's find contour method. Something like this ?
+- [ ] Approximate contours to have less points with `cv2.approxPolyDP` ? Unless we need more points to better constraint the feasible route (see [issue](https://github.com/dsleo/stravart/issues/1))?
 
 - [ ] Write the route to gpx file.
-- [ ] Add LLM Option "Give me the contour of a crocodile"
-- [ ] Ask LLM directly "Give me directions that makes the contour of a crocodile" ?
+    
+- [X] Add LLM Option "Give me the contour of a crocodile" (it's a huge fail ;) )
 - [ ] Try multi-modal LLM maybe ¯\\\_(ツ)\_/¯
 
 
