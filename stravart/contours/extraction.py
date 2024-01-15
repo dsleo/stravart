@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import cv2
 import numpy as np
 import urllib.request
@@ -159,3 +159,5 @@ class ContourExtractor():
         else:
             contour_ix  = max(range(len(self.contours)), key=lambda i: len(self.contours[i]))
             return self.merge_contour(contour_ix=contour_ix, threshold=threshold)
+        
+    
