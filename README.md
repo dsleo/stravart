@@ -2,6 +2,19 @@
 
 Ultimate goal is to design routes as the contour of an image.
 
+## How this (should) work
+Here is the recipe:
+
+1. Extract a contour (list of coordinates) from an image
+2. Project that contour on a map.
+3. Find the closests *feasible* (cycling or walking) points for each pair of coordinates.
+4. Get direction between successives points.
+
+We try to look for the best possible route by:
+1. Applying multiple operations to the polygon (dilatation, rotation)
+2. Measure each feasible route quality - as the total difference area between the image contour and the suggested polygon.
+3. Select the best one according to the previous criterion.
+
 ## Installation
 
 To install StravArt, follow these steps:
