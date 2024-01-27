@@ -45,11 +45,12 @@ Have a look at the starter notebook.
 ## TODO
 
 - [X] Start with a meta-heuristic to speed up search.
-- [X] Add the openCV's find contour method. Something like this ?
-- [ ] Approximate contours to have less points with `cv2.approxPolyDP` ? Unless we need more points to better constraint the feasible route (see [issue](https://github.com/dsleo/stravart/issues/1))?
+- [X] Add the openCV's find contour method. Something like this.
+- [X] Approximate contours to have less points with `cv2.approxPolyDP` ?
+Unless we need more points to better constraint the feasible route (see [issue](https://github.com/dsleo/stravart/issues/1))?
 
 - [ ] Write the route to gpx file.
-    
+
 - [X] Add LLM Option "Give me the contour of a crocodile" (it's a huge fail ;) )
 - [ ] Try multi-modal LLM maybe ¯\\\_(ツ)\_/¯
 
