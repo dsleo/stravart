@@ -1,10 +1,9 @@
-from stravart.utils import *
-from stravart.polygone import *
-from stravart.search.operations import *
-from stravart.search.operations import *
-from stravart.search.metrics import *
-
 import optuna
+
+from stravart.directions import Route
+from stravart.search.operations import Projection, Rotation
+from stravart.search.metrics import diff_area
+
 
 def generate_route(gps_poly):
     bicycle_contour = gps_poly.get_nearest_bicycle_road_points(dist=2000)

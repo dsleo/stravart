@@ -4,8 +4,8 @@ import math
 from math import radians, cos, sin, asin, sqrt
 import numpy as np
 
-from .coordinates import Coordinates
-from .polygone import Polygon
+from stravart.coordinates import Coordinates
+from stravart.polygone import Polygon
 
 @dataclass
 class Translation:
@@ -175,23 +175,3 @@ def sinusoidal_perturbation(polygon, amplitude=0.05, frequency=1):
         perturbed_polygon.append((mid_x_perturbed, mid_y_perturbed))
 
     return perturbed_polygon
-
-def radial_distortion(polygon, distortion_factor=0.1):
-    """
-    Apply radial distortion to a polygon.
-
-    :param polygon: List of tuples [(x1, y1), (x2, y2), ..., (xn, yn)]
-    :param distortion_factor: Factor by which to distort; positive values expand, negative values contract
-    :return: Radially distorted polygon as a list of tuples
-    """
-    centroid = find_polygon_centroid(polygon)
-    distorted_polygon = []
-
-    for point in polygon:
-        # Vector from centroid to current point
-        vector = np.array(point) - np.array(centroid)
-        # Apply distortion
-        distorted_point = np.array(centroid) + vector * (1 + distortion_factor)
-        distorted_polygon.append(tuple(distorted_point))
-
-    return distorted_polygon

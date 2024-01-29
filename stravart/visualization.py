@@ -2,7 +2,7 @@ import folium
 import matplotlib.pyplot as plt 
 from sklearn.preprocessing import MinMaxScaler
 
-from .directions import *
+from stravart.directions import Route
 
 def plot_route(map_center, route: Route, contour = True, points = True):
     
@@ -22,7 +22,6 @@ def plot_contours(contour1, contour2):
     x_coords, y_coords = zip(*contour1)
     x2_coords, y2_coords = zip(*contour2)
     
-    # Plotting
     plt.figure(figsize=(5, 5))
     plt.plot(y_coords, x_coords, marker='x', label=str("first"))
     plt.plot(y2_coords, x2_coords, marker='o', label=str("second"))

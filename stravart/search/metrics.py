@@ -1,10 +1,9 @@
 import numpy as np
-#import cv2
+import cv2
 from scipy.spatial.distance import directed_hausdorff
 from sklearn.preprocessing import MinMaxScaler
 
-from .directions import *
-from .polygone import *
+from stravart.polygone import Polygon
 
 def get_contour_from_points(points):
     """Convert a list of points to a contour format used by OpenCV."""
