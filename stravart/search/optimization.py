@@ -1,8 +1,8 @@
 from stravart.utils import *
 from stravart.polygone import *
-from stravart.operations import *
-from stravart.operations import *
-from stravart.metrics import *
+from stravart.search.operations import *
+from stravart.search.operations import *
+from stravart.search.metrics import *
 
 import optuna
 
