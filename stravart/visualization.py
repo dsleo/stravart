@@ -1,6 +1,7 @@
 import folium
 import matplotlib.pyplot as plt 
 from sklearn.preprocessing import MinMaxScaler
+from adjustText import adjust_text
 
 from stravart.directions import Route
 
@@ -17,14 +18,31 @@ def plot_route(map_center, route: Route, contour = True, points = True):
     
     return m
 
+def plot_contour(contour):
+
+    x_coords, y_coords = zip(*contour)
+    
+    plt.plot(x_coords, y_coords, marker='x')
+    texts = []
+    for i, (x, y) in enumerate(zip(x_coords, y_coords)):
+        texts.append(plt.text(x, y, str(i), fontsize=9, ha='right', va='bottom'))
+
+    adjust_text(texts, arrowprops=dict(arrowstyle='->', color='red'))
+
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.grid(True)
+    plt.axis('equal')
+    plt.show()
+    
 def plot_contours(contour1, contour2):
 
     x_coords, y_coords = zip(*contour1)
     x2_coords, y2_coords = zip(*contour2)
     
     plt.figure(figsize=(5, 5))
-    plt.plot(y_coords, x_coords, marker='x', label=str("first"))
-    plt.plot(y2_coords, x2_coords, marker='o', label=str("second"))
+    plt.plot(x_coords, y_coords, marker='x', label=str("first"))
+    plt.plot(x2_coords, y2_coords, marker='o', label=str("second"))
     plt.xlabel('X Coordinate')
     plt.ylabel('Y Coordinate')
     plt.grid(True)
