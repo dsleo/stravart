@@ -98,6 +98,10 @@ class Projection:
             scale_factor = self.radius / max_distance
             scaled_poly = Scaling(scale_factor).apply(translated_poly)
     
+        # Invert coordinates before projecting to GPS. It's because Cartesian coordinates (x,y) corresponds to longitude, latitude.
+        inverted_coordinates = [Coordinates(coord.longitude, coord.latitude) for coord in scaled_poly.coordinates]
+        scaled_poly = Polygon(coordinates=inverted_coordinates)
+        
         # Translate the contour to the map center
         center = Coordinates.from_tuple(self.center)
         final_contour = Translation(vector=-center).apply(scaled_poly)
