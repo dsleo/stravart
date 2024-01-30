@@ -4,6 +4,7 @@ import numpy as np
 import urllib.request
 import matplotlib.pyplot as plt
 
+from stravart.contours.contours import Contour
 @dataclass
 class ContourExtractor():
     image_path: str
@@ -132,7 +133,7 @@ class ContourExtractor():
         # Combine all merged contours into one
         final_contour = np.vstack(merged_contours)
 
-        return final_contour
+        return Contour(final_contour)
 
     @staticmethod
     def find(parent, i):
