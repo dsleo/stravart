@@ -63,6 +63,7 @@ class Coordinates:
         return cls(latitude=coordinates[0], longitude=coordinates[1])
 
     def get_nearest_bicycle_road_point(self, dist=1000):
+        '''
         try:
             mode = "cycling"
             access_token = MAPBOX_ACCESS_TOKEN
@@ -80,7 +81,7 @@ class Coordinates:
 
             if data['code'] != 'Ok':
                 raise Exception("Mapbox API error: " + data['code'])
-
+            print(data['routes'])
             nearest_point = None
             min_distance = float('inf')
             for route in data['routes']:
@@ -146,4 +147,3 @@ class Coordinates:
         except Exception as e:
             print(f"Error getting closest bicycle coordinate for {(lat, lon)}: {e}")
             return None
-'''
