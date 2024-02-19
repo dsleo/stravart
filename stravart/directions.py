@@ -167,28 +167,24 @@ class Route:
         :param min_distance: Minimum distance (in meters) for filtering.
         """
         full_path = Route()
-        path_mapping = {}
         temp_mapping = {}  # Temporary mapping to store unfiltered paths
 
-        for i in range(len(self.coordinates) - 1):
-            start = self.coordinates[i]
-            end = self.coordinates[i + 1]
-
+        def process_segment(start, end):
             direction = Direction(start, end)
             if provider == "google":
                 path_segment = direction.get_shortest_path_google_maps(mode)
             elif provider == "mapbox":
                 path_segment = direction.get_mapbox_routes(mode)
+            return Direction.from_coordinates(start, end), path_segment
 
-            # Initialize path segment for mapping
-            temp_mapping[Direction.from_coordinates(start, end)] = Route()
+        results = Parallel(n_jobs=-1)(delayed(process_segment)(self.coordinates[i], self.coordinates[i + 1]) for i in range(len(self.coordinates) - 1))
 
-            # Add the path segment to the full path, removing consecutive duplicates
+        for direction_key, path_segment in results:
+            temp_mapping[direction_key] = Route()
             for point in path_segment:
                 full_path.add_coordinate(point)
-                temp_mapping[Direction.from_coordinates(start, end)].add_coordinate(point)
+                temp_mapping[direction_key].add_coordinate(point)
 
-        # Apply filtering if required
         if apply_filter:
             filtered_full_path = Route()
             for i in range(len(full_path.coordinates)):
@@ -196,6 +192,7 @@ class Route:
                     filtered_full_path.add_coordinate(full_path.coordinates[i])
 
             # Update path_mapping based on filtered_full_path
+            path_mapping = {}
             for direction, route in temp_mapping.items():
                 filtered_route = Route()
                 for point in route.coordinates:
