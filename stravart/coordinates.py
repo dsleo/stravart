@@ -105,24 +105,13 @@ class Coordinates:
             overpass_query = f"""
             [out:json];
                           (
-              way(around:{dist},{lat},{lon})["highway"="cycleway"];
-              way(around:{dist},{lat},{lon})["bicycle"="designated"];
-              way(around:{dist},{lat},{lon})["bicycle"="yes"];
-              way(around:{dist},{lat},{lon})["highway"="residential"];
-              way(around:{dist},{lat},{lon})["highway"="service"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="path"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="footway"]["bicycle"="yes"];
-              way(around:{dist},{lat},{lon})["highway"="living_street"];
-              way(around:{dist},{lat},{lon})["highway"="track"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="tertiary"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="secondary"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="primary"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="unclassified"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="pedestrian"]["bicycle"="yes"];
-              way(around:{dist},{lat},{lon})["highway"="bridleway"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="trunk"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="trunk_link"]["bicycle"!="no"];
-              way(around:{dist},{lat},{lon})["highway"="motorway_link"]["bicycle"!="no"];
+            way(around:{dist},{lat},{lon})["highway"="cycleway"];
+            way(around:{dist},{lat},{lon})["bicycle"="designated"];
+            way(around:{dist},{lat},{lon})["bicycle"="yes"];
+            way(around:{dist},{lat},{lon})["highway"="path"]["bicycle"!="no"];
+            way(around:{dist},{lat},{lon})["highway"="footway"]["bicycle"="yes"];
+            way(around:{dist},{lat},{lon})["highway"="service"]["bicycle"!="no"];
+            way(around:{dist},{lat},{lon})["highway"="residential"]["bicycle"!="no"];
             );
         
             (._;>;);
