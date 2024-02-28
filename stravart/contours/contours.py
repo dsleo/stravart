@@ -21,7 +21,7 @@ class Contour:
             if all(np.linalg.norm(point - other_point) >= threshold for other_point in filtered_contour):
                 filtered_contour.append(point)
 
-        return np.array(filtered_contour)
+        return Contour(raw_contour=np.array(filtered_contour))
 
     def replace_with_longest_sublist(self, contour):
         contour_tuples = [tuple(point) for point in contour]
@@ -49,3 +49,17 @@ class Contour:
             i += 1
 
         return np.array(new_contour)
+    
+    def slice_contour(self, step: int):
+        """Returns a new Contour instance with raw_contour sliced by the given step."""
+        sliced = self.raw_contour[::step]
+        return Contour(raw_contour=sliced)
+    
+    def __delitem__(self, index: int):
+        """Delete an element from raw_contour at the specified index."""
+        self.raw_contour = np.delete(self.raw_contour, index, axis=0)
+
+    def close(self):
+        """Ensure the contour is closed by making the first point the same as the last point."""
+        if not np.array_equal(self.raw_contour[0], self.raw_contour[-1]):
+            self.raw_contour = np.vstack([self.raw_contour, self.raw_contour[0]])

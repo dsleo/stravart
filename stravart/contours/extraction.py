@@ -23,7 +23,7 @@ class ContourExtractor():
         if self.image is None:
             raise ValueError("Could not open or find the image")
     
-    def get_contours(self, show=False, merge=True):
+    def get_all_contours(self, show=False, merge=True):
         """Extract contours from an image and merge them if they share points"""
         self._read_image()
 
@@ -154,11 +154,23 @@ class ContourExtractor():
             parent[yroot] = xroot
             rank[xroot] += 1
 
-    def merge_largest_contour(self, threshold):
+    def merge_largest_contour(self, threshold=0.05):
         if not self.merged_contour:
             raise ValueError("You need to get contours first!")
         else:
+            #contour_ix should always be 0 but we never know
             contour_ix  = max(range(len(self.contours)), key=lambda i: len(self.contours[i]))
             return self.merge_contour(contour_ix=contour_ix, threshold=threshold)
+    
+    def get_best_contour(self, merge_threshold=0.05, eps=0.0001, filter_threshold=15):
+        '''Entry point with some heuristic-based params'''
+        self.get_all_contours(show=False, merge=True)
+        largest_contour = self.merge_largest_contour(threshold=merge_threshold)
+        largest_contour.approximate(eps=eps)
+        filtered_contour = largest_contour.filter_close_points(threshold=filter_threshold)
+        
+        #Flip the contour
+        flipped_contour =  np.array([(x, -y) for x, y in filtered_contour.raw_contour])
+        return Contour(raw_contour=flipped_contour)
         
     
