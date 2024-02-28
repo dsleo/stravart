@@ -44,6 +44,7 @@ Check out the [Optimization notebook](https://github.com/dsleo/stravart/blob/mai
 
 ```python
 import optuna
+from stravart.search.optimization import generate_grid, objective
 
 # Grid over Paris
 lat_start, lat_end = 48.8156, 48.9022
