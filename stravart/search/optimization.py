@@ -6,8 +6,7 @@ from stravart.search.metrics import diff_area
 
 
 def generate_route(gps_poly):
-    bicycle_contour = gps_poly.get_nearest_bicycle_road_points(dist=2000)
-    final_contour, path_mapping = Route(bicycle_contour).fill_paths_between_points()
+    final_contour, path_mapping = gps_poly.fill_paths_between_points()
     return final_contour, path_mapping
     
 def test_operation(operation, map_center, radius, poly):
