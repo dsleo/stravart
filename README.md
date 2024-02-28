@@ -42,6 +42,22 @@ We can try to look for the best possible route by:
 
 Check out the [Optimization notebook](https://github.com/dsleo/stravart/blob/main/notebooks/Optuna%20Optimization.ipynb)
 
+```python
+import optuna
+
+# Grid over Paris
+lat_start, lat_end = 48.8156, 48.9022
+lon_start, lon_end = 2.2241, 2.4699
+city_grid = generate_grid(lat_start, lat_end, lon_start, lon_end, 5, 5)
+
+study = optuna.create_study(direction='minimize')
+study.optimize(lambda trial: objective(trial, poly=poly, city_grid=city_grid), n_trials=10)
+
+best_trial = study.best_trial
+best_final_contour = best_trial.user_attrs['final_contour']
+map_center = city_grid[study.best_params['map_center_idx']]
+```
+
 ## Installation
 
 To install StravArt, follow these steps:
