@@ -82,10 +82,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Get Started
-
-Have a look at the starter notebook.
-
 ## TODO
 
 - [X] Start with a meta-heuristic to speed up search.
