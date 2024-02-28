@@ -1,9 +1,11 @@
 import folium
 import matplotlib.pyplot as plt 
+import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from adjustText import adjust_text
 
 from stravart.directions import Route
+from stravart.contours.contours import Contour
 
 def plot_route(map_center, route: Route, contour = True, points = True):
     
@@ -19,9 +21,15 @@ def plot_route(map_center, route: Route, contour = True, points = True):
     return m
 
 def plot_contour(contour):
-
-    x_coords, y_coords = zip(*contour)
-    
+    if isinstance(contour, Contour):
+        x_coords, y_coords = contour.raw_contour[:, 0], contour.raw_contour[:, 1]
+    elif isinstance(contour, np.ndarray):
+        x_coords, y_coords = contour[:, 0], contour[:, 1]
+    elif isinstance(contour, list) and all(len(point) == 2 for point in contour):
+        x_coords, y_coords = zip(*contour)
+    else:
+        raise ValueError("Unsupported contour format. Must be an instance of Contour, a NumPy array, or a list of points.")
+        
     plt.plot(x_coords, y_coords, marker='x')
     texts = []
     for i, (x, y) in enumerate(zip(x_coords, y_coords)):
