@@ -2,18 +2,43 @@
 
 Ultimate goal is to design routes as the contour of an image.
 
-## How this (should) work
+## How to convert an image to a Route
 Here is the recipe:
 
-1. Extract a contour (list of coordinates) from an image
+1. Extract the largest contour (list of coordinates) from an image
 2. Project that contour on a map.
-3. Find the closests *feasible* (cycling or walking) points for each pair of coordinates.
-4. Get direction between successives points.
+3. Get direction between successives points.
 
-We try to look for the best possible route by:
+```python
+from stravart.polygone import Polygon
+from stravart.search.operations import Projection
+from stravart.contours.extraction import ContourExtractor
+
+contour_extractor = ContourExtractor("path/to/img")
+contour = contour_extractor.get_best_contour()
+contour.close()
+
+map_center =  (48.8675, 2.3638)  
+radius = 0.03
+
+poly =  Polygon.from_list(coordinates_list=contour, system="cartesian")
+projection = Projection(center=map_center, radius=radius, map_type="GPS")
+gps_poly = projection.apply(poly)
+
+final_contour, path_mapping = gps_poly.fill_paths_between_points()
+plot_route(map_center=map_center, route=final_contour)
+```
+
+For natural image, check out the [Contour Extraction.ipynb](https://github.com/dsleo/stravart/blob/main/notebooks/Contour%20Extraction.ipynb) notebook.
+
+## Find a better route
+
+We can try to look for the best possible route by:
 1. Applying multiple operations to the polygon (dilatation, rotation)
 2. Measure each feasible route quality - as the total difference area between the image contour and the suggested polygon.
 3. Select the best one according to the previous criterion.
+
+Check out the [Optimization notebook](https://github.com/dsleo/stravart/blob/main/notebooks/Optuna%20Optimization.ipynb)
 
 ## Installation
 
