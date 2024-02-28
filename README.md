@@ -9,6 +9,8 @@ Here is the recipe:
 2. Project that contour on a map.
 3. Get direction between successives points.
 
+Have a look at the [Starter Notebook](https://github.com/dsleo/stravart/blob/main/notebooks/Starter%20Notebook.ipynb) for a first overview.
+
 ```python
 from stravart.polygone import Polygon
 from stravart.search.operations import Projection
