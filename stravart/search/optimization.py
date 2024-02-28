@@ -1,6 +1,3 @@
-import optuna
-
-from stravart.directions import Route
 from stravart.search.operations import Projection, Rotation
 from stravart.search.metrics import diff_area
 
