@@ -63,7 +63,7 @@ map_center = city_grid[study.best_params['map_center_idx']]
 For this image of a dog  
 <img src="https://github.com/dsleo/stravart/blob/main/img/dog.jpg" width="50%" height="40%">
 
-Running the code above (contour extraction + optimization) results in this route around 30kms:     
+Running the code above (contour extraction + optimization) results in this route which is around 30kms long:     
 <img src="https://github.com/dsleo/stravart/blob/main/img/dog_paris.png"  width="50%" height="40%">
 
 ## Installation
