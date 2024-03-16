@@ -13,3 +13,4 @@ setuptools==69.0.2
 Shapely==2.0.3
 streamlit==1.32.2
 streamlit_folium==0.18.0
+opencv-python==4.9.0.80
