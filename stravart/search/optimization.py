@@ -29,14 +29,13 @@ def generate_grid(lat_start, lat_end, lon_start, lon_end, lat_points, lon_points
     return grid
 
 def define_search_space(trial, city_grid):
-    angle = trial.suggest_float('rot_angle', -20, 20, step=5)
+    angle = trial.suggest_float('rot_angle', -10, 10, step=5)
 
     # Randomly select a map center from city_grid
     map_center_idx = trial.suggest_int('map_center_idx', 0, len(city_grid) - 1)
     map_center = city_grid[map_center_idx]
 
     # Use discrete increments for radius
-    #radius = trial.suggest_discrete_uniform('radius', 0.01, 0.1, 0.005)
     radius = trial.suggest_float('radius', 0.01, 0.1, step= 0.005)
 
     return angle, map_center, radius
