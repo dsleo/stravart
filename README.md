@@ -49,15 +49,22 @@ from stravart.search.optimization import generate_grid, objective
 # Grid over Paris
 lat_start, lat_end = 48.8156, 48.9022
 lon_start, lon_end = 2.2241, 2.4699
-city_grid = generate_grid(lat_start, lat_end, lon_start, lon_end, 5, 5)
+city_grid = generate_grid(lat_start, lat_end, lon_start, lon_end, 10, 10)
 
 study = optuna.create_study(direction='minimize')
-study.optimize(lambda trial: objective(trial, poly=poly, city_grid=city_grid), n_trials=10)
+study.optimize(lambda trial: objective(trial, poly=poly, city_grid=city_grid), n_trials=30)
 
 best_trial = study.best_trial
 best_final_contour = best_trial.user_attrs['final_contour']
 map_center = city_grid[study.best_params['map_center_idx']]
 ```
+
+## Example
+For this image of a dog  
+<img src="https://github.com/dsleo/stravart/blob/main/img/dog.jpg" width="50%" height="40%">
+
+Running the code above (contour extraction + optimization) results in this route which is around 30kms long:     
+<img src="https://github.com/dsleo/stravart/blob/main/img/dog_paris.png"  width="50%" height="40%">
 
 ## Installation
 
