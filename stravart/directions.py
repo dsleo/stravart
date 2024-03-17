@@ -3,14 +3,14 @@ from typing import List
 from joblib import Parallel, delayed
 import requests
 import json
+import os
 import googlemaps
 from geopy.distance import great_circle
 
-from config import MAPBOX_ACCESS_TOKEN, GMAPS_KEY
 from .coordinates import Coordinates
 
 @dataclass(frozen=True)
-class Direction:
+class Direction
     start: Coordinates
     end: Coordinates
 
@@ -27,6 +27,7 @@ class Direction:
         return cls(start=start, end=end)
 
     def get_shortest_path_google_maps(self, mode="walking", alternatives=True, decimals=4):
+        GMAPS_KEY = os.getenv('GMAPS_KEY')
         gmaps = googlemaps.Client(key=GMAPS_KEY)
         start_tuple = tuple(self.start)
         end_tuple = tuple(self.end)
@@ -77,6 +78,7 @@ class Direction:
         return Route.from_list(unique_path_points)'''
 
     def get_mapbox_routes(self, mode="cycling", alternatives=True, decimals=4):
+        MAPBOX_ACCESS_TOKEN = os.getenv('MAPBOX_ACCESS_TOKEN')
         access_token = MAPBOX_ACCESS_TOKEN
         url = f"https://api.mapbox.com/directions/v5/mapbox/{mode}/{self.start.longitude},{self.start.latitude};{self.end.longitude},{self.end.latitude}"
         params = {

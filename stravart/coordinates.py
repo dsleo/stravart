@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 from typing import List
 import numpy as np
 import requests
-from config import MAPBOX_ACCESS_TOKEN
 from geopy.distance import great_circle
+
 
 @dataclass(frozen=True)
 class Coordinates:
@@ -65,8 +65,9 @@ class Coordinates:
     def get_nearest_bicycle_road_point(self, dist=1000):
         '''
         try:
+            import os
+            access_token = os.getenv('MAPBOX_ACCESS_TOKEN')
             mode = "cycling"
-            access_token = MAPBOX_ACCESS_TOKEN
             coordinates = f"{self.longitude},{self.latitude};{self.longitude},{self.latitude}"
             url = f"https://api.mapbox.com/directions/v5/mapbox/{mode}/{coordinates}"
 
