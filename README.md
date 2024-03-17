@@ -89,6 +89,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+4. Set up API access tokens
+By default, we use Google Maps API. You need to get an access token first and set it as environment variable.
+```bash
+export GMAPS_KEY=youraccesstoken
+```
+or directly in Python 
+```python
+import os
+os.environ['GMAPS_KEY']='youraccesstoken'
+```
+
 ## TODO
 
 - [ ] Write the route to gpx file.
