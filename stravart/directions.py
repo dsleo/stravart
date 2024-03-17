@@ -10,7 +10,7 @@ from geopy.distance import great_circle
 from .coordinates import Coordinates
 
 @dataclass(frozen=True)
-class Direction
+class Direction:
     start: Coordinates
     end: Coordinates
 
