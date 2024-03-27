@@ -1,6 +1,6 @@
 import streamlit as st
 import folium
-from streamlit_folium import st_folium
+from streamlit_folium import folium_static
 
 import optuna
 
@@ -10,6 +10,8 @@ from stravart.search.optimization import generate_route, diff_area, Rotation, Pr
 
 if 'study_running' not in st.session_state:
     st.session_state.study_running = False
+if 'show_start_button' not in st.session_state:
+    st.session_state['show_start_button'] = True
 if 'study' not in st.session_state:
     st.session_state.study = optuna.create_study(direction='minimize')
 if 'current_map_data' not in st.session_state:
@@ -50,12 +52,16 @@ def generate_grid(lat_start, lat_end, lon_start, lon_end, lat_points, lon_points
     
     return grid
 
-# Streamlit layout
 st.title("StravArt")
-
-# User inputs for parameters
 n_trials = st.sidebar.number_input('Number of Trials', min_value=3, max_value=50, value=3)
 grid_size = st.sidebar.slider('City Grid Size', min_value=3, max_value=10, value=5)
+placeholder = st.empty()
+
+def reset_app():
+    """Reset application state."""
+    st.session_state['study_running'] = False
+    st.session_state['show_start_button'] = True
+    st.markdown("""<style>.css-18rr39v{visibility:hidden}</style><div class="block-container css-18rr39v"></div>""", unsafe_allow_html=True)
 
 lat_start, lat_end = 48.8156, 48.9022
 lon_start, lon_end = 2.2241, 2.4699
@@ -76,9 +82,7 @@ coordinates = [
 
 origin = simplify_coordinates(coordinates)
 poly =  Polygon.from_list(coordinates_list=origin, system="cartesian")
-normed_poly = poly.scale_coordinates()
 
-# Optuna study
 def define_search_space(trial, city_grid):
     angle = trial.suggest_float('rot_angle', -20, 20, step=5)
 
@@ -105,51 +109,50 @@ def objective(trial, poly=poly, city_grid=city_grid):
 
     return loss
 
-map_container = st.container()
+with st.sidebar:
+    if st.session_state.show_start_button:
+        if st.button('Start Optuna Study', key='start_study_btn'):
+            st.session_state.study_running = True
+            st.session_state.show_start_button = False
+            if st.button('Abort Study', key='abort_study_btn', disabled=False, on_click=reset_app):
+                st.warning('Optuna Study Aborted')
 
-if not st.session_state.study_running:
-    if st.button('Start Optuna Study'):
-        st.session_state.study_running = True
-        st.session_state.best_map_data = None 
-        st.session_state.best_loss = float('inf')
-        with st.spinner('Running Optuna Study...'):
-            trial_status_placeholder = st.empty()
-            best_loss_placeholder = st.empty()
-            for i in range(n_trials):
-                trial_status_placeholder.write(f"Currently testing trial number: {i + 1}")
-                trial = st.session_state.study.ask()
-                loss = objective(trial, poly=poly, city_grid=city_grid)
-                st.session_state.study.tell(trial, loss)
-
-                if loss < st.session_state.best_loss:
-                    st.session_state.best_loss = loss
-                    best_loss_placeholder.write(f"Best loss so far: {round(loss, 3)}")
-                    map_center, final_contour = st.session_state.current_map_data
-                    m = folium.Map(location=map_center, zoom_start=14)
-                    fg = generate_fg(final_contour)
-                    fg.add_to(m)
-                    st.session_state.best_map_data = m 
-
-            trial_status_placeholder.empty()
-
-        st.session_state.study_running = False
-
-        best_trial = st.session_state.study.best_trial
-        st.write("Best trial loss:", round(best_trial.value, 4))
-        st.write("Best trial params:", best_trial.params)
-
-if st.session_state.best_map_data is not None:
-    best_trial = st.session_state.study.best_trial
-    st.write("Best trial loss:", round(best_trial.value, 4))
-    st.write("Best trial params:", best_trial.params)
-    
-    map_display_width = 700
-    map_display_height = 500
-
-    with st.container():
-        st_folium(st.session_state.best_map_data, width=map_display_width, height=map_display_height)
+    elif st.session_state.study_running:
+        if st.button('Abort Study', key='abort_study_btn', disabled=False, on_click=reset_app):
+            st.warning('Optuna Study Aborted')
 
 if st.session_state.study_running:
-    if st.button('Abort Study'):
-        st.session_state.study_running = False
-        st.warning('Optuna Study Aborted')
+    trial_status_placeholder = st.empty()
+    best_loss_placeholder = st.empty()
+    with st.spinner('Running Optuna Study...'):
+        for i in range(n_trials):
+            print(f'Doing {i} trials')
+            trial_status_placeholder.write(f"Currently testing trial number: {i + 1}")
+            trial = st.session_state.study.ask()
+            loss = objective(trial, poly=poly, city_grid=city_grid)
+            st.session_state.study.tell(trial, loss)
+
+            if loss < st.session_state.best_loss:
+                st.session_state.best_loss = loss
+                best_loss_placeholder.write(f"Best loss so far: {round(loss, 3)}")
+                map_center, final_contour = st.session_state.current_map_data
+                m = folium.Map(location=map_center, zoom_start=14)
+                fg = generate_fg(final_contour)
+                fg.add_to(m)
+                st.session_state.best_map_data = m 
+
+                with placeholder.container():
+                    import time
+                    map_display_width = 700
+                    map_display_height = 500
+                    folium_static(st.session_state.best_map_data, width=map_display_width, height=map_display_height)
+                    best_trial = st.session_state.study.best_trial
+                    st.write("Best trial loss:", round(best_trial.value, 4))
+                    st.write("Best trial params:", best_trial.params)
+                    time.sleep(1)
+
+        trial_status_placeholder.empty()
+    st.session_state.study_running = False
+
+else:
+    st.sidebar.info("The study is currently stopped.")
