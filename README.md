@@ -103,6 +103,7 @@ os.environ['GMAPS_KEY']='youraccesstoken'
 ## TODO
 
 - [ ] Write the route to gpx file.
+- [ ] Check out SAM-like approach directly in a webapp ? (check out this [one](https://github.com/prateekralhan/Segment-Anything-Streamlit) in streamlit or [this blog](https://blog.roboflow.com/how-to-use-segment-anything-model-sam/))
 
 
 
