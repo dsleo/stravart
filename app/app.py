@@ -61,6 +61,9 @@ def reset_app():
     """Reset application state."""
     st.session_state['study_running'] = False
     st.session_state['show_start_button'] = True
+    st.session_state['current_trial_number'] = 0
+    st.session_state['best_loss'] = float('inf')
+    st.session_state['current_map_data'] = None
     st.markdown("""<style>.css-18rr39v{visibility:hidden}</style><div class="block-container css-18rr39v"></div>""", unsafe_allow_html=True)
 
 lat_start, lat_end = 48.8156, 48.9022
