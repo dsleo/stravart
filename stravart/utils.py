@@ -1,5 +1,6 @@
 import gpxpy
-from gpxpy.gpx import Track, Waypoint
+import gpxpy.gpx
+import os
 import matplotlib.pyplot as plt
 from math import radians, sin, cos, asin, sqrt
 
@@ -73,26 +74,16 @@ def haversine(lon1, lat1, lon2, lat2):
     r = 6371 # Radius of earth in kilometers
     return c * r
 
-def to_gpx(gps_coordinates_list, filepath='contour.gpx'):
-    """Writes a GPX file at the specified filepath based on a list of GPS coordinates."""
-    
-    if not isinstance(gps_coordinates_list, list) or len(gps_coordinates_list) == 0:
-        raise ValueError("Input should be a non-empty list containing GPS coordinates.")
-        
-    for coord in gps_coordinates_list:
-        if not isinstance(coord, tuple) or len(coord) != 2:
-            raise ValueError("Each item in the input list must be a two-element tuple representing a GPS coordinate.")
-        lat, lon = coord
-        if not all([isinstance(x, float) or isinstance(x, int) for x in [lat, lon]]):
-            raise ValueError("GPS coordinates should contain only numeric values.")
-
-    track = Track()
-    for lat, lon in gps_coordinates_list:
-        wpt = Waypoint(lat, lon)
-        track.segments[0].waypoints.append(wpt)
-    
+def create_gpx_file(coordinates_list, filename, output_dir="../routes/"):
     gpx = gpxpy.gpx.GPX()
+    track = gpxpy.gpx.GPXTrack()
     gpx.tracks.append(track)
+    segment = gpxpy.gpx.GPXTrackSegment()
+    track.segments.append(segment)
 
-    with open(filepath, 'w') as f:
-        f.write(str(gpx))
+    for coord in coordinates_list:
+        segment.points.append(gpxpy.gpx.GPXTrackPoint(coord[0], coord[1]))
+    
+    full_path = os.path.abspath(os.path.join(output_dir, filename))
+    with open(full_path, 'w') as f:
+        f.write(gpx.to_xml())
