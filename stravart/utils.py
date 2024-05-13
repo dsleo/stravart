@@ -1,5 +1,5 @@
-import numpy as np
-import folium
+import gpxpy
+from gpxpy.gpx import Track, Waypoint
 import matplotlib.pyplot as plt
 from math import radians, sin, cos, asin, sqrt
 
@@ -72,3 +72,27 @@ def haversine(lon1, lat1, lon2, lat2):
     c = 2 * asin(sqrt(a)) 
     r = 6371 # Radius of earth in kilometers
     return c * r
+
+def to_gpx(gps_coordinates_list, filepath='contour.gpx'):
+    """Writes a GPX file at the specified filepath based on a list of GPS coordinates."""
+    
+    if not isinstance(gps_coordinates_list, list) or len(gps_coordinates_list) == 0:
+        raise ValueError("Input should be a non-empty list containing GPS coordinates.")
+        
+    for coord in gps_coordinates_list:
+        if not isinstance(coord, tuple) or len(coord) != 2:
+            raise ValueError("Each item in the input list must be a two-element tuple representing a GPS coordinate.")
+        lat, lon = coord
+        if not all([isinstance(x, float) or isinstance(x, int) for x in [lat, lon]]):
+            raise ValueError("GPS coordinates should contain only numeric values.")
+
+    track = Track()
+    for lat, lon in gps_coordinates_list:
+        wpt = Waypoint(lat, lon)
+        track.segments[0].waypoints.append(wpt)
+    
+    gpx = gpxpy.gpx.GPX()
+    gpx.tracks.append(track)
+
+    with open(filepath, 'w') as f:
+        f.write(str(gpx))
