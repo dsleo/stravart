@@ -15,6 +15,14 @@ class Coordinates:
             return NotImplemented
         return (self.latitude, self.longitude) == (other.latitude, other.longitude)
 
+    def __getitem__(self, key):
+        if key == 0:
+            return self.latitude
+        elif key == 1:
+            return self.longitude
+        else:
+            raise IndexError("Coordinates index out of range")
+        
     def __hash__(self):
         return hash((self.latitude, self.longitude))
         
